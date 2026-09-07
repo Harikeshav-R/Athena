@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "phase/**"
+      - "feat/**"
+      - "fix/**"
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --all-groups
+      - name: Ruff Check
+        run: uv run ruff check .
+      - name: Ruff Format Check
+        run: uv run ruff format --check .
+      - name: Mypy Strict Typecheck
+        run: uv run mypy src tests
+
+  test:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --all-groups
+      - name: Run Tests with Coverage Gate (100%)
+        run: uv run pytest -m "not acceptance" --cov=athena --cov-report=term-missing
+
+  audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --all-groups
+      - name: Run pip-audit
+        run: uv run pip-audit
+
+  secrets:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

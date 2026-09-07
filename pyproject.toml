@@ -1,0 +1,83 @@
+[project]
+name = "athena"
+version = "0.1.0"
+description = "Self-hosted, memory-first personal AI agent"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []              # added per phase, never speculatively
+
+[project.scripts]
+athena           = "athena.cli:main"
+athena-api       = "athena.api.__main__:main"
+athena-worker    = "athena.worker.__main__:main"
+athena-scheduler = "athena.scheduler.__main__:main"
+athena-mcp       = "athena.mcp.__main__:main"
+
+[dependency-groups]
+dev = [
+  "pytest", "pytest-asyncio", "pytest-cov", "pytest-randomly",
+  "testcontainers[postgres]", "hypothesis",
+  "ruff", "mypy", "types-python-dateutil",
+  "pip-audit", "pydantic",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "D203", "D213",     # docstring style conflicts with D211/D212
+  "COM812",           # conflicts with the formatter
+  "FIX", "TD",        # TODO policing; AGENTS.md governs this instead
+  "CPY001",           # Athena uses top-level LICENSE file
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLR2004", "ANN", "D", "TRY", "EM", "PLC0415", "PT017", "S105", "S106"]
+
+[tool.ruff.lint.flake8-bandit]
+# S110 (try-except-pass) and S112 (try-except-continue) stay enabled: I-12 forbids
+# swallowing errors, and these are how it happens in practice.
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+disallow_any_explicit = false      # JSONB payloads are genuinely Any at the boundary
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+  "acceptance: slow end-to-end tests that gate a phase",
+  "integration: requires a real Postgres or ML service",
+]
+addopts = "-ra --strict-markers --strict-config"
+
+[tool.coverage.run]
+branch = true
+source = ["src/athena"]
+omit = ["src/athena/__main__.py"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+  "@overload",
+  "class .*\\(Protocol\\):",
+]
