@@ -1,0 +1,49 @@
+# server.toml — HTTP server, database connection, and session policy
+#
+# Changes to server.bind, server.port, server.workers, and database.url
+# require a process restart (non-reloadable).
+
+[server]
+# IP address to bind to. Loopback is recommended; Tailscale handles remote access.
+bind = "127.0.0.1"
+
+# Port to listen on.
+port = 8000
+
+# Number of server worker processes.
+workers = 1
+
+# Timezone used for edge formatting and UI display (I-13).
+timezone = "America/New_York"
+
+# Allowed CORS origins. Empty by default for same-origin production deployment.
+cors_origins = []
+
+[database]
+# PostgreSQL async connection URL. (Non-reloadable)
+url = "postgresql+asyncpg://postgres:postgres@localhost:5432/athena"
+
+# Database connection pool size.
+pool_size = 5
+
+# Maximum overflow connections above pool_size.
+max_overflow = 10
+
+# Timeout in seconds when waiting for an available connection from the pool.
+pool_timeout_s = 30.0
+
+[session]
+# Name of the HTTP session cookie.
+cookie_name = "athena_session"
+
+# Lifetime of a session in days before re-authentication is required.
+lifetime_days = 30
+
+# Environment variable containing the secret key used for session signing/hashing.
+secret_env = "ATHENA_SESSION_SECRET"
+
+# Whether the session cookie requires HTTPS/Secure flag.
+secure = true
+
+# SameSite cookie policy (strict recommended for same-origin SPA).
+same_site = "strict"

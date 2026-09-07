@@ -1,0 +1,38 @@
+# retrieval.toml — OpenViking provider, embedding service, and scoping rules
+
+[provider]
+# Retrieval backend implementation.
+kind      = "openviking"
+base_url  = "http://openviking:8000"
+timeout_s = 60.0
+
+[embedding]
+# Vector embedding service. (Non-reloadable: changing model requires full reindex).
+base_url  = "http://athena-ml:8082/v1"
+model     = "<local-embedding-model-id>"  # REQUIRED
+dimension = 1024
+
+[scopes]
+# viking:// URI roots for each corpus. (Non-reloadable).
+vault_root            = "viking://resources/vault"
+email_root            = "viking://resources/email"
+calendar_root         = "viking://resources/calendar"
+max_month_scopes      = 6
+allow_unscoped_search = true
+
+[search]
+# Candidate recall count and final selection offload count.
+candidates = 40
+final_k    = 8
+
+[offload]
+# Offload directory and preview caps for I-09 compliance (no full docs in main thread).
+directory         = "/retrieved"
+preview_chars     = 200
+max_result_tokens = 1500
+
+[index]
+# Nightly catch-up indexing over unindexed or modified documents.
+catchup_batch_size = 50
+submit_timeout_s   = 300.0
+retry_max          = 3

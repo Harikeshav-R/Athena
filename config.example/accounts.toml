@@ -1,0 +1,53 @@
+# accounts.toml — External integrations: email, calendar, Canvas LMS (I-07, D-08)
+#
+# Credentials are NEVER stored here. Only environment variable names ending in _env
+# are referenced.
+
+[email.accounts.personal]
+id           = "personal"
+provider     = "imap"
+address      = "owner@example.com"  # REQUIRED
+imap_host    = "imap.mail.me.com"
+imap_port    = 993
+smtp_host    = "smtp.mail.me.com"
+smtp_port    = 587
+password_env = "ATHENA_ICLOUD_APP_PASSWORD"
+
+[email.prefilter]
+# Default action for inbound messages not matched by any rule.
+default = "eligible"
+
+# Deterministic email pre-filter rules evaluated in order (I-11).
+[[email.prefilter.rules]]
+id     = "bulk-mail"
+action = "ignored"
+when   = { has_header = "List-Unsubscribe" }
+
+[[email.prefilter.rules]]
+id     = "noreply-senders"
+action = "ignored"
+when   = { from_matches = ["^no-?reply@", "^donotreply@", "^bounce"] }
+
+[[email.prefilter.rules]]
+id     = "instructors"
+action = "eligible"
+when   = { from_domain_in = ["osu.edu"] }
+
+[[email.prefilter.rules]]
+id     = "own-sent-mail"
+action = "ignored"
+when   = { from_is_own_account = true }
+
+[calendar.accounts.primary]
+id           = "primary"
+provider     = "caldav"
+caldav_url   = "https://caldav.icloud.com"
+username     = "owner@example.com"  # REQUIRED
+password_env = "ATHENA_ICLOUD_APP_PASSWORD"
+primary      = true
+
+[canvas]
+base_url    = "https://canvas.osu.edu"  # REQUIRED
+token_env   = "ATHENA_CANVAS_TOKEN"
+term_filter = "SP26"
+course_ids  = []

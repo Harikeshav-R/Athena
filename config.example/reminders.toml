@@ -1,0 +1,53 @@
+# reminders.toml — Lead times, quiet hours, escalation rules, and morning digest
+
+[general]
+timezone        = "America/New_York"
+quiet_hours     = { start = "22:00", end = "07:30" }
+# "defer" pushes reminders to the end of quiet hours rather than dropping them.
+quiet_behaviour = "defer"
+
+[[rules]]
+id         = "assignment-lead-times"
+subject    = "canvas_assignment"
+enabled    = true
+lead_times = ["7d", "3d", "24h", "2h"]
+skip_if    = { has_submitted = true }
+
+[rules.overrides.low_stakes]
+when       = { points_possible_lt = 10 }
+lead_times = ["24h"]
+
+[[rules]]
+id        = "due-date-moved"
+subject   = "canvas_assignment"
+enabled   = true
+on_event  = "assignment_due_changed"
+immediate = true
+
+[[rules]]
+id         = "overdue-escalation"
+subject    = "canvas_assignment"
+enabled    = true
+after_due  = ["1h", "24h"]
+skip_if    = { has_submitted = true }
+stop_after = 2
+
+[[rules]]
+id             = "calendar-events"
+subject        = "calendar_event"
+enabled        = true
+lead_times     = ["1h"]
+only_calendars = ["primary"]
+
+[digest]
+enabled       = true
+at            = "07:30"
+window        = "48h"
+include       = [
+  "due_assignments",
+  "calendar_events",
+  "pending_approvals",
+  "needs_reply_email"
+]
+model_role    = "drafting"
+skip_if_empty = true

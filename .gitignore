@@ -2,10 +2,10 @@
 .env
 .env.*
 !.env.example
-config/
+/config/
+!/config.example/
 vault/
 media/
-models/
 backups/
 *.db
 .venv/

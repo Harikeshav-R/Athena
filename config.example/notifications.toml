@@ -1,0 +1,28 @@
+# notifications.toml — Delivery channels, VAPID credentials, and rate limits
+
+[channels.web_push]
+# Web push notification channel via browser service workers (D-14).
+enabled               = true
+vapid_public_key_env  = "ATHENA_VAPID_PUBLIC_KEY"
+vapid_private_key_env = "ATHENA_VAPID_PRIVATE_KEY"
+vapid_subject         = "mailto:owner@example.com"  # REQUIRED
+ttl_s                 = 86400
+
+[categories.approval]
+# Approvals block execution and are NEVER throttled.
+push     = true
+throttle = "none"
+
+[categories.reminder]
+# Reminders are rate-limited and collapsed to avoid alert fatigue.
+push     = true
+throttle = { max_per_hour = 6, collapse = true }
+
+[categories.digest]
+push     = true
+throttle = "none"
+
+[categories.error]
+# System errors are throttled to prevent notification storms.
+push     = true
+throttle = { max_per_hour = 3, collapse = true }

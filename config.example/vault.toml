@@ -1,0 +1,38 @@
+# vault.toml — Obsidian vault structure, exclusions, and naming schemes (I-04, D-02, D-03)
+
+# Absolute path to the vault root directory on the host or inside the container.
+root = "${ATHENA_VAULT_ROOT}"
+
+[structure]
+# Top-level directory layout in the vault.
+athena_dir     = "_athena"
+memories_dir   = "_athena/memories"
+inbox_dir      = "_athena/inbox"
+media_dir      = "media"
+courses_dir    = "courses"
+projects_dir   = "projects"
+journal_dir    = "journal"
+people_dir     = "people"
+references_dir = "references"
+
+[structure.course_subdirs]
+# Subdirectories inside each course directory.
+lectures    = "lectures"
+slides      = "slides"
+assignments = "assignments"
+readings    = "readings"
+notes       = "notes"
+
+[indexing]
+# Directories excluded from chunking and vector embedding.
+exclude = ["media", "_athena/logs", "_athena/inbox"]
+
+[naming]
+# Path naming templates.
+# The YYYY/MM/ nesting on dated types is REQUIRED: OpenViking scopes retrieval by
+# path prefix, so this directory structure forms the retrieval filter index (D-02, D-03).
+lecture         = "{year}/{month:02d}/{date}-lecture-{sequence:02d}"
+slide_deck      = "{year}/{month:02d}/{date}-{title_slug}"
+assignment      = "{assignment_slug}"
+journal         = "{year}/{month:02d}/{date}"
+slug_max_length = 60

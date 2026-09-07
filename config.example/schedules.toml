@@ -1,0 +1,54 @@
+# schedules.toml — Background job triggers and poller frequencies
+
+timezone = "America/New_York"
+
+[jobs.poll_canvas]
+# Periodic Canvas LMS sync for courses, assignments, and files.
+enabled  = true
+trigger  = "interval"
+minutes  = 30
+jitter_s = 120
+
+[jobs.poll_email]
+# Periodic email sync and pre-filtering (L3, I-11).
+enabled  = true
+trigger  = "interval"
+minutes  = 5
+
+[jobs.poll_calendar]
+# Calendar event sync.
+enabled  = true
+trigger  = "interval"
+minutes  = 15
+
+[jobs.fire_reminders]
+# Fast tick that checks and fires due reminders. Cheap, local-only.
+enabled  = true
+trigger  = "interval"
+minutes  = 1
+
+[jobs.daily_digest]
+# Morning briefing cron job.
+enabled  = true
+trigger  = "cron"
+hour     = 7
+minute   = 30
+
+[jobs.expire_approvals]
+# Auto-reject expired approval requests.
+enabled  = true
+trigger  = "interval"
+minutes  = 5
+
+[jobs.reap_stale_jobs]
+# Heartbeat reaper for orphaned queue jobs.
+enabled  = true
+trigger  = "interval"
+minutes  = 2
+
+[jobs.reindex_vault]
+# Nightly catch-up indexing across unindexed vault documents.
+enabled  = true
+trigger  = "cron"
+hour     = 3
+minute   = 0

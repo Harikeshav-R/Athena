@@ -1,0 +1,84 @@
+# agent.toml — Agent graph, LLM routing, subagents, limits, and assignment modes
+
+[models]
+# Provider name and API endpoint configuration.
+provider    = "openrouter"
+api_key_env = "ATHENA_OPENROUTER_API_KEY"
+base_url    = "https://openrouter.ai/api/v1"
+
+[models.roles.orchestrator]
+# Main orchestrator model for planning and tool routing.
+model       = "<free-tier-orchestrator-model-id>"  # REQUIRED
+fallbacks   = ["<fallback-model-id>"]
+temperature = 0.0
+max_tokens  = 4096
+timeout_s   = 120.0
+
+[models.roles.synthesis]
+# Synthesis subagent model used to answer questions from retrieved batches (I-05, I-09).
+model       = "<free-tier-synthesis-model-id>"     # REQUIRED
+fallbacks   = ["<fallback-model-id>"]
+temperature = 0.0
+max_tokens  = 8192
+timeout_s   = 180.0
+
+[models.roles.triage]
+# Fast, cheap model for inbound email classification and confidence scoring.
+model       = "<free-tier-triage-model-id>"        # REQUIRED
+fallbacks   = []
+temperature = 0.0
+max_tokens  = 512
+timeout_s   = 30.0
+
+[models.roles.drafting]
+# Model for drafting emails and morning digest summaries.
+model       = "<free-tier-drafting-model-id>"      # REQUIRED
+fallbacks   = []
+temperature = 0.3
+max_tokens  = 2048
+timeout_s   = 60.0
+
+[models.roles.vision]
+# Vision-capable model for PDF page-to-markdown conversion.
+model       = "<free-tier-vision-model-id>"        # REQUIRED
+fallbacks   = []
+temperature = 0.0
+max_tokens  = 4096
+timeout_s   = 120.0
+
+[limits]
+# Safety boundaries to prevent unbounded loops or context exhaustion.
+max_tool_iterations     = 40
+max_run_duration_s      = 900
+max_concurrent_runs     = 2
+summarization_threshold = 150000
+
+[rate_limits]
+# Token-bucket rate limiting and exponential backoff configuration.
+requests_per_minute = 20
+max_retries         = 5
+backoff_base_s      = 2.0
+backoff_max_s       = 60.0
+jitter              = true
+
+[subagents.synthesis]
+# Subagent for scoped retrieval answer synthesis (I-09).
+enabled     = true
+prompt_file = "prompts/synthesis.md"
+model_role  = "synthesis"
+
+[subagents.email_drafter]
+# Subagent for preparing email replies for human review.
+enabled     = true
+prompt_file = "prompts/email_drafter.md"
+model_role  = "drafting"
+
+[assignments]
+# Academic assistance mode. "study" assists with concepts; "draft" prepares solutions (N1).
+enabled = true
+mode    = "study"
+
+[assignments.output]
+# Athena drafts are saved to the vault with provenance: athena (I-02). Athena never submits.
+write_to_vault = true
+vault_subdir   = "assignments"

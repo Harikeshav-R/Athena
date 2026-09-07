@@ -1,0 +1,44 @@
+# ingestion.toml — Audio transcription, PDF vision pipeline, and Canvas downloads
+
+[audio]
+# Whisper ASR endpoint, diarization, and lecture topic segmentation.
+base_url           = "http://host.docker.internal:8081"
+model              = "<asr-model-id>"  # REQUIRED
+language           = "en"
+diarize            = true
+word_timestamps    = true
+vad                = true
+timeout_s          = 5400.0
+section_gap_s      = 6.0
+section_titles     = "heuristic"       # "heuristic" | "model" | "none"
+speaker_map_source = "course_file"
+
+[pdf]
+# Slide deck conversion pipeline: rasterize at dpi, then convert pages with vision model.
+dpi              = 150
+max_pages        = 300
+page_concurrency = 2
+model_role       = "vision"
+retry_per_page   = 3
+checkpoint_every = 1
+
+[canvas]
+# Maximum file size to download from Canvas attachments.
+max_file_size_mb      = 50
+allowed_content_types = [
+  "application/pdf",
+  "audio/mp4",
+  "audio/mpeg",
+  "audio/x-m4a",
+  "text/plain",
+  "text/markdown"
+]
+
+[watchers]
+# Vault inbox watcher debounce and scratch storage.
+debounce_ms = 1000
+scratch_dir = "/tmp/athena-ingest"
+
+[limits]
+# Hard ceiling on single-file upload size via the API.
+max_upload_size_mb = 500

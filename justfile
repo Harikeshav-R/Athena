@@ -3,6 +3,9 @@ default: check
 install:
     uv sync --all-groups
 
+init:
+    uv run python -m athena.config.init_cli
+
 check: lint typecheck test
 
 lint:

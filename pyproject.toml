@@ -4,7 +4,11 @@ version = "0.1.0"
 description = "Self-hosted, memory-first personal AI agent"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []              # added per phase, never speculatively
+dependencies = [
+    "pydantic>=2.13.5",
+    "pydantic-settings>=2.15.0",
+    "watchfiles>=1.2.0",
+]              # added per phase, never speculatively
 
 [project.scripts]
 athena           = "athena.cli:main"
@@ -45,6 +49,12 @@ ignore = [
 [tool.ruff.lint.flake8-bandit]
 # S110 (try-except-pass) and S112 (try-except-continue) stay enabled: I-12 forbids
 # swallowing errors, and these are how it happens in practice.
+
+[tool.ruff.lint.flake8-type-checking]
+runtime-evaluated-base-classes = [
+  "pydantic.BaseModel",
+  "athena.config.models.base.AthenaConfigModel",
+]
 
 [tool.mypy]
 python_version = "3.12"

@@ -1,0 +1,40 @@
+# approvals.toml — Human-in-the-loop approval rules and interrupt boundary (I-03, I-15)
+
+[defaults]
+# Default expiry in minutes. Expiry resolves to REJECT (D-13).
+expiry_minutes    = 720
+allowed_decisions = ["approve", "edit", "reject"]
+
+[tools.email_send_message]
+interrupt         = true
+expiry_minutes    = 240
+allowed_decisions = ["approve", "edit", "reject"]
+
+[tools.email_reply]
+interrupt         = true
+expiry_minutes    = 240
+allowed_decisions = ["approve", "edit", "reject"]
+
+[tools.calendar_create_event]
+interrupt         = true
+expiry_minutes    = 1440
+allowed_decisions = ["approve", "edit", "reject"]
+
+[tools.calendar_update_event]
+interrupt         = true
+expiry_minutes    = 1440
+allowed_decisions = ["approve", "edit", "reject"]
+
+[tools.calendar_delete_event]
+interrupt         = true
+# Delete actions do not permit editing arguments — only approve or reject.
+allowed_decisions = ["approve", "reject"]
+
+# Auto-approval is opt-in only per action (I-15, D-13).
+[[auto_approve]]
+tool        = "calendar_create_event"
+enabled     = false
+description = "Automatically mirror Canvas due dates into the calendar"
+[auto_approve.when]
+source      = "canvas_due_date"
+calendar_id = "athena-coursework"
