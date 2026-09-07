@@ -1,0 +1,65 @@
+name: "Bug Report"
+description: "Report an issue, regression, or unexpected behavior in Athena."
+title: "fix: [Short summary of the bug]"
+labels: ["needs-triage", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Please verify that this report contains no secrets, credentials, or personal tokens.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps or minimal test case to reproduce the behavior.
+      placeholder: |
+        1. Run '...'
+        2. Send message '...'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen according to system invariants and specifications.
+      placeholder: What should have happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment & Runtime
+      description: Details about your deployment environment.
+      value: |
+        - OS: [e.g. macOS Sonoma / Sequoia (Apple Silicon)]
+        - Python version: [e.g. 3.12.13]
+        - Docker version: [e.g. 27.x]
+        - Deployment mode: [e.g. Container CPU / Host Metal ASR]
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs or Traceback
+      description: Please paste any relevant JSON logs or stack traces (ensure secrets are redacted).
+      render: shell
+    validations:
+      required: false
+  - type: checkboxes
+    id: safety_checks
+    attributes:
+      label: Safety & Invariant Checks
+      options:
+        - label: "I have confirmed that no secrets, tokens, or private credentials are included in this report (I-07)."
+          required: true
+        - label: "I have checked `docs/02-invariants.md` to see if this is related to an expected boundary/interrupt (I-03)."
+          required: false

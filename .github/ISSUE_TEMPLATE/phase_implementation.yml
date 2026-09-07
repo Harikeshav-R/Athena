@@ -1,0 +1,58 @@
+name: "Phase Implementation"
+description: "Track progress and exit gate criteria for a structured build phase."
+title: "phase: [Phase NN — Title]"
+labels: ["needs-triage", "phase"]
+body:
+  - type: dropdown
+    id: phase_number
+    attributes:
+      label: Phase
+      description: Select the Athena phase being implemented.
+      options:
+        - "Phase 00 — Repository, tooling, CI"
+        - "Phase 01 — Configuration system"
+        - "Phase 02 — Postgres, schema, migrations"
+        - "Phase 03 — Deep Agents harness + durability"
+        - "Phase 04 — Vault bootstrap + filesystem fencing"
+        - "Phase 05 — Embedding and ASR services"
+        - "Phase 06 — Ingestion pipeline"
+        - "Phase 07 — OpenViking + scoped retrieval"
+        - "Phase 08 — FastAPI backend + auth"
+        - "Phase 09 — Web UI"
+        - "Phase 10 — Approval queue + interrupts + push"
+        - "Phase 11 — MCP servers, read-only"
+        - "Phase 12 — Write paths"
+        - "Phase 13 — Scheduler, pollers, reminders"
+        - "Phase 14 — Assignment assistance"
+        - "Phase 15 — Containerize and deploy"
+    validations:
+      required: true
+  - type: textarea
+    id: objective
+    attributes:
+      label: Phase Objective
+      description: Quote or summarize the objective from `docs/phases/phase-NN-*.md`.
+    validations:
+      required: true
+  - type: textarea
+    id: exit_gate
+    attributes:
+      label: Exit Gate Requirements
+      description: List the required exit gate checks for this phase.
+    validations:
+      required: true
+  - type: checkboxes
+    id: gate_verification
+    attributes:
+      label: Phase Gate Verification Checklist
+      options:
+        - label: "All ordered steps in the phase document are completed."
+          required: true
+        - label: "Required unit and integration tests exist and pass."
+          required: true
+        - label: "100% statement and branch coverage maintained (`pytest-cov`)."
+          required: true
+        - label: "`just check` is green."
+          required: true
+        - label: "No invariant in `docs/02-invariants.md` is violated."
+          required: true
