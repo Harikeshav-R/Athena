@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Athena Architecture & Documentation
+    url: https://github.com/Harikeshav-R/Athena/tree/main/docs
+    about: Read the Athena system architecture, invariants, decisions, and phase specs.
+  - name: Security Vulnerability Reporting
+    url: https://github.com/Harikeshav-R/Athena/security/policy
+    about: Privately report a security vulnerability or credential leak.

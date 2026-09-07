@@ -1,0 +1,41 @@
+name: "Feature Request / Enhancement"
+description: "Suggest a new idea, capability, or architectural enhancement for Athena."
+title: "feat: [Short summary of the feature proposal]"
+labels: ["needs-triage", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please verify that this proposal aligns with Athena's product scope in `docs/00-product.md` and non-goals.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Motivation
+      description: What problem are you trying to solve or what opportunity are you addressing?
+      placeholder: Describe the motivation...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: A detailed description of how this capability should work.
+      placeholder: Describe the technical or user experience design...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any other approaches or existing solutions considered and why they were not chosen.
+    validations:
+      required: false
+  - type: checkboxes
+    id: invariants_alignment
+    attributes:
+      label: Alignment with System Invariants
+      options:
+        - label: "This proposal does not violate any invariant in `docs/02-invariants.md` (e.g., I-01 vault as single source of truth, I-03 human approval boundary, I-11 deterministic automations)."
+          required: true
+        - label: "This proposal falls within MVP scope or is documented as a post-MVP roadmap item."
+          required: false
