@@ -290,3 +290,20 @@ A task is done when:
   — the evaluation deltas
 
 Then stop and say the gate is met. **Do not start the next phase.**
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Uses canonical triage label vocabulary (`needs-triage`, `ready-for-agent`, etc.). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context repository layout. See `docs/agents/domain.md`.
+
